@@ -1,0 +1,861 @@
+openapi: 3.0.2
+info:
+  title: Card API
+  version: 1.0.4
+  license:
+    url: 'https://www.monext.fr/retail'
+    name: Monext - All rights reserved
+  description: |-
+    # BASICS
+
+      ## Introduction
+
+      The Monext Retail API is RESTful, meaning that it uses HTTP verbs (POST, PUT, GET...) to perform functions on resources.
+
+      Specifically, POST is used to create a resource, PUT to update a resource, and GET to retrieve a resource or a collection of resources.
+
+      For example, to create a new wallet resource you would send a POST requests to Wallets.
+
+      POST and PUT requests usually require data to be passed in the message body to define the attributes of the object being created or updated.
+
+
+      ## Versioning
+      The API version is indicated in each endpoint resource path. For example, [https://api-sandbox.retail.monext.com/v1/payout](https://api-sandbox.retail.monext.com/v1/payout) indicates the API is at version 1.
+
+      Monext increments the version number when it releases a new version containing backwards-incompatible changes.
+
+      Some minor changes, mostly for improvements, could happens without version changes.
+
+
+      ## Security
+      The Monext Retail API processes sensitive data. That's why we pay special attention to security.
+      * Monext data centers deploy the latest in hardware and software security best practices.
+      * Communication with all Monext services requires TLS1.2.
+      * All communication is made by using standard features of HTTPs.
+      * Monext maintains PCI-DSS compliance certifications.
+
+      ## Responses
+      Monext Retail API calls return HTTP status codes. Some API calls also return JSON response bodies that include information about the resource.
+      When you create any Monext resource, the system associates an internal unique identifier for referencing that resource.
+
+      **HTTP Status Code**
+
+      Each API call returns a success or error HTTP status codes following the [RFC7231](https://tools.ietf.org/html/rfc7231).
+
+
+      **Success**
+
+      The following status codes of HTTP are used:
+
+      2xx - the request was successfully accepted and was or will be processed.
+
+
+      **Error**
+
+      The following status codes of HTTP are used:
+
+      4xx - the request was rejected due to a problem with the information sent by the client.
+
+      5xx - something unexpected occurred while fulfilling the request; the request may or may not have been processed, depending on the error.
+
+      Whenever a client receives a 5xx response, it should not assume anything about the processing state of such request.
+
+
+      ## Authentication
+
+      | Security Scheme Type      | HTTP  | Server |
+      |---------------------------|-------|--------|
+      | HTTP Authorization Scheme | basic |        |
+
+
+      ## Query
+      For most REST GET calls, you can specify one or more optional query parameters on the request URI to filter, limit the size of, and sort the data in an API response. For filter parameters, see the individual GET calls.
+
+
+      ## Sorting and Pagination
+      Rather than return everything from a large result set, we are using some URL parameters that will influence the page size and starting page number.
+
+      **Query parameter details**
+
+      | Parameter   | Type        | Description                                                             |
+      |-------------|-------------|-------------------------------------------------------------------------|
+      | size        | integer     | The number of items to list in the response.                            |
+      | page        | integer     | The page index.                                                         |
+      | sort        | string      | Sorts resources in the response by a specified value and sort direction.|
+
+      **Response field details**
+
+      | Parameter   | Type    | Description                                                       |
+      |-------------|---------|-------------------------------------------------------------------|
+      | count       | integer | The number of items to list in the response.                      |
+      | startIndex  | integer | The sort order index of the first resource in the returned array. |
+      | endIndex    | integer | The sort order index of the last resource in the returned array.  |
+      | recordTotal | integer | count of records                                                  |
+      <br>
+x-readme:
+  explorer-enabled: true
+  samples-languages:
+    - curl
+    - node
+    - javascript
+    - python
+    - kotlin
+    - swift
+  proxy-enabled: true
+  samples-enabled: true
+externalDocs:
+  url: 'https://api-docs.retail.monext.com/'
+  description: Monext Online documentation
+servers:
+  - url: 'https://api-sandbox.retail.monext.com'
+    description: Try our API on the sandbox (Homologation environment)
+  - url: 'https://develop-dev1-rest-api.ext.dev.payline.com'
+  - url: 'https://develop-dev2-rest-api.ext.dev.payline.com'
+    description: docker DEV2
+  - url: 'https://feature-paylsquad2-2406-dev2-rest-api.ext.dev.payline.com'
+    description: docker PayoutAPI (DEV2)
+  - url: 'https://admin.dev.payline.com/new-api'
+    description: Recette (DEV2)
+security:
+  - basicAuth: []
+tags:
+  - name: Test
+  - name: Updater
+    description: 'Monext Online''s CardUpdater service automatically updates card information, ensuring payment continuity for subscriptions and improving merchant efficiency.'
+    externalDocs:
+      description: Documentation
+      url: 'https://docs.monext.fr/display/DT/Actualisation+automatique+des+cartes'
+paths:
+  /v1/alive:
+    get:
+      tags:
+        - Test
+      summary: is it alive ?
+      operationId: alive
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          content:
+            '*/*':
+              schema:
+                type: string
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/BadRequestResult'
+        '401':
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+        '403':
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+        '404':
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+        '409':
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+        '412':
+          description: Precondition Failed
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+        '422':
+          description: Unprocessable Entity
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+        '429':
+          description: Too Many Requests
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+        '500':
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+        '501':
+          description: Not Implemented
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+        '502':
+          description: Bad Gateway ou Proxy Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+        '503':
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+        '504':
+          description: Gateway Time-out
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+  /v1/card/updater/search:
+    post:
+      tags:
+        - Updater
+      summary: Search updated card
+      description: 'This feature enables the automatic update of CB cards, ensuring seamless continuity for subscriptions and one click payments.<br> It interfaces with CB''s Card Updater service to check if new card information is available in the database.<br> If a new card is available to replace an expired or blocked card, CB sends Monext Online the updated card information, which is then used to update the card details in the user''s wallet.<br> This service helps merchants maintain uninterrupted transactions by automatically updating card details, thus reducing transaction failures and improving customer experience.<br> For more information, refer to [our Card Updater Service documentation](https://docs.monext.fr/display/DT/Actualisation+automatique+des+cartes)'
+      operationId: cardUpdaterSearch
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: test
+              $ref: '#/components/schemas/CardUpdaterRequest'
+        required: true
+      responses:
+        '200':
+          description: 'Success: Check result object for detail.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardUpdaterResponse'
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/BadRequestResult'
+        '401':
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+        '403':
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+        '404':
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+        '409':
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+        '412':
+          description: Precondition Failed
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+        '422':
+          description: Unprocessable Entity
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+        '429':
+          description: Too Many Requests
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+        '500':
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+        '501':
+          description: Not Implemented
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+        '502':
+          description: Bad Gateway ou Proxy Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+        '503':
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+        '504':
+          description: Gateway Time-out
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Result'
+components:
+  links: {}
+  callbacks: {}
+  schemas:
+    Result:
+      title: Result
+      description: Result
+      required:
+        - title
+        - code
+        - detail
+      type: object
+      properties:
+        title:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: 'ACCEPTED, ERROR, REFUSED, CANCELLED, INPROGRESS, ONHOLD_PARTNER, PENDING_RISK.<br> See [result code list](https://docs.monext.fr/display/DT/Return+codes)'
+          example: ERROR
+        code:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: 'Return code : more information. <br> See [result code list](https://docs.monext.fr/display/DT/Return+codes)'
+          example: '02305'
+        detail:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+          example: 'Invalid field format, please refer to the user guide'
+    SuccessfulResult:
+      title: SuccessfulResult
+      description: Successful result
+      allOf:
+        - $ref: '#/components/schemas/Result'
+        - type: object
+          properties:
+            title:
+              description: 'Result object in case of success or warning. ACCEPTED, REFUSED, CANCELLED, INPROGRESS, ONHOLD_PARTNER, PENDING_RISK.<br> See [result code list](https://docs.monext.fr/display/DT/Return+codes)'
+              example: ACCEPTED
+            code:
+              description: 'Return code : more information. <br> See [result code list](https://docs.monext.fr/display/DT/Return+codes)'
+              example: '00000'
+            detail:
+              example: Sucessful
+    BadRequestResult:
+      title: BadRequestResult
+      description: BadRequest result
+      allOf:
+        - $ref: '#/components/schemas/Result'
+        - type: object
+          properties:
+            invalidParams:
+              description: List of invalid fields and the appropriate format
+              type: array
+              items:
+                $ref: '#/components/schemas/InvalidParams'
+    InvalidParams:
+      title: InvalidParams
+      type: object
+      description: List of invalid fields and the appropriate format
+      properties:
+        name:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: invalid field name
+        reason:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: expected format for the field
+          example: size must be between 3 and 4
+        codes:
+          maxItems: 255
+          minItems: 0
+          type: array
+          description: Translation error key
+          example: '{form.group.error}'
+          items:
+            type: string
+            description: Translation error key
+            example: '{form.group.error}'
+        arguments:
+          maxItems: 255
+          minItems: 0
+          type: array
+          description: Arguments error key
+          example: 127
+          items:
+            type: string
+            description: Arguments error key
+            example: '127'
+    CardNumber:
+      title: CardNumber
+      type: string
+      maxLength: 20
+      minLength: 0
+      description: Card number (PAN).
+      example: '444433322221111'
+    CardMxToken:
+      title: CardMxToken
+      type: string
+      description: Monext alias of the card number.
+      maxLength: 19
+      minLength: 13
+      example: 1111gPNzHtyu4444
+    Card:
+      title: Card
+      type: object
+      allOf:
+        - title: CardBase
+          type: object
+          description: Base class for Card classes
+          properties:
+            holderName:
+              type: string
+              maxLength: 50
+              minLength: 2
+              description: Name of the cardholder present on the card (given by the customer)
+              example: JOHN DOE
+            expirationDate:
+              $ref: '#/components/schemas/ExpirationDate'
+            mxToken:
+              $ref: '#/components/schemas/CardMxToken'
+        - type: object
+          description: Details of the card used in the payment
+          properties:
+            maskedNumber:
+              type: string
+              description: Masked number of the card used in the payment transaction.
+              maxLength: 19
+              minLength: 13
+              example: 111122XXXXXX4444
+            panType:
+              title: PanType
+              type: string
+              enum:
+                - CARD_PAN
+                - NETWORK_TOKEN
+                - DEVICE_TOKEN
+                - UPDATED_PAN
+              description: 'The type of PAN used in the transaction. <br> Values: CARD_PAN, NETWORK_TOKEN, DEVICE_TOKEN, UPDATED_PAN'
+              example: CARD_PAN
+            country:
+              allOf:
+                - title: Country
+                  enum:
+                    - AW
+                    - AF
+                    - AO
+                    - AI
+                    - AX
+                    - AL
+                    - AD
+                    - AE
+                    - AR
+                    - AM
+                    - AS
+                    - AQ
+                    - TF
+                    - AG
+                    - AU
+                    - AT
+                    - AZ
+                    - BI
+                    - BE
+                    - BJ
+                    - BQ
+                    - BF
+                    - BD
+                    - BG
+                    - BH
+                    - BS
+                    - BA
+                    - BL
+                    - BY
+                    - BZ
+                    - BM
+                    - BO
+                    - BR
+                    - BB
+                    - BN
+                    - BT
+                    - BV
+                    - BW
+                    - CF
+                    - CA
+                    - CC
+                    - CH
+                    - CL
+                    - CN
+                    - CI
+                    - CM
+                    - CD
+                    - CG
+                    - CK
+                    - CO
+                    - KM
+                    - CV
+                    - CR
+                    - CU
+                    - CW
+                    - CX
+                    - KY
+                    - CY
+                    - CZ
+                    - DE
+                    - DJ
+                    - DM
+                    - DK
+                    - DO
+                    - DZ
+                    - EC
+                    - EG
+                    - ER
+                    - EH
+                    - ES
+                    - EE
+                    - ET
+                    - FI
+                    - FJ
+                    - FK
+                    - FR
+                    - FO
+                    - FM
+                    - GA
+                    - GB
+                    - GE
+                    - GG
+                    - GH
+                    - GI
+                    - GN
+                    - GP
+                    - GM
+                    - GW
+                    - GQ
+                    - GR
+                    - GD
+                    - GL
+                    - GT
+                    - GF
+                    - GU
+                    - GY
+                    - HK
+                    - HM
+                    - HN
+                    - HR
+                    - HT
+                    - HU
+                    - ID
+                    - IM
+                    - IN
+                    - IO
+                    - IE
+                    - IR
+                    - IQ
+                    - IS
+                    - IL
+                    - IT
+                    - JM
+                    - JE
+                    - JO
+                    - JP
+                    - KZ
+                    - KE
+                    - KG
+                    - KH
+                    - KI
+                    - KN
+                    - KR
+                    - KW
+                    - LA
+                    - LB
+                    - LR
+                    - LY
+                    - LC
+                    - LI
+                    - LK
+                    - LS
+                    - LT
+                    - LU
+                    - LV
+                    - MO
+                    - MF
+                    - MA
+                    - MC
+                    - MD
+                    - MG
+                    - MV
+                    - MX
+                    - MH
+                    - MK
+                    - ML
+                    - MT
+                    - MM
+                    - ME
+                    - MN
+                    - MP
+                    - MZ
+                    - MR
+                    - MS
+                    - MQ
+                    - MU
+                    - MW
+                    - MY
+                    - YT
+                    - NA
+                    - NC
+                    - NE
+                    - NF
+                    - NG
+                    - NI
+                    - NU
+                    - NL
+                    - 'NO'
+                    - NP
+                    - NR
+                    - NZ
+                    - OM
+                    - PK
+                    - PA
+                    - PN
+                    - PE
+                    - PH
+                    - PW
+                    - PG
+                    - PL
+                    - PR
+                    - KP
+                    - PT
+                    - PY
+                    - PS
+                    - PF
+                    - QA
+                    - RE
+                    - RO
+                    - RU
+                    - RW
+                    - SA
+                    - SD
+                    - SN
+                    - SG
+                    - GS
+                    - SH
+                    - SJ
+                    - SB
+                    - SL
+                    - SV
+                    - SM
+                    - SO
+                    - PM
+                    - RS
+                    - SS
+                    - ST
+                    - SR
+                    - SK
+                    - SI
+                    - SE
+                    - SZ
+                    - SX
+                    - SC
+                    - SY
+                    - TC
+                    - TD
+                    - TG
+                    - TH
+                    - TJ
+                    - TK
+                    - TM
+                    - TL
+                    - TO
+                    - TT
+                    - TN
+                    - TR
+                    - TV
+                    - TW
+                    - TZ
+                    - UG
+                    - UA
+                    - UM
+                    - UY
+                    - US
+                    - UZ
+                    - VA
+                    - VC
+                    - VE
+                    - VG
+                    - VI
+                    - VN
+                    - VU
+                    - WF
+                    - WS
+                    - YE
+                    - ZA
+                    - ZM
+                    - ZW
+                  description: '2-letter country code, see [ISO_3166-1_alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) <br> example : <code>FR</code> for France'
+                  maxLength: 2
+                  minLength: 2
+                  default: FR
+                  example: FR
+                - description: 'Issuing bank country code of the card used in the payment transaction.<br> See [ISO_3166-1_alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)'
+                - default: ''
+            issuer:
+              allOf:
+                - description: Issuer of the card used in the payment transaction.
+                  title: Issuer
+                  type: object
+                  required:
+                    - code
+                  properties:
+                    code:
+                      type: string
+                      description: Issuer code.
+                      minLength: 0
+                      maxLength: 50
+                      example: '15589'
+                    name:
+                      type: string
+                      description: Issuer name.
+                      example: CREDIT MUTUEL ARKEA
+            product:
+              type: string
+              description: 'Product code of the card used in the payment transaction.<br> See [Product codes](https://docs.payline.com/display/DT/Codes+-+Produit)'
+              maxLength: 100
+              minLength: 0
+              example: Visa Infinite
+            selectedNetwork:
+              title: SelectedNetwork
+              type: string
+              maxLength: 30
+              minLength: 2
+              description: 'Cardholder selected network for payment, specifically for cobranded cards.'
+              enum:
+                - AMERICAN_EXPRESS
+                - CETELEM
+                - CARTES_BANCAIRES
+                - COFINOGA
+                - DINERS_CLUB
+                - JCB
+                - MASTERCARD
+                - VISA
+              example: VISA
+            network:
+              type: string
+              description: 'Indicates the network or networks associated with the card. <br> It can be either a card on a single network, such as CB, VISA, or MASTERCARD "only", <br> or a "co-branded" card like CB-VISA or CB-MASTERCARD." <br> Exemples : CB, VISA, MASTERCARD, CB-VISA, CB-MASTERCARD'
+              example: CB-VISA
+    ExpirationDate:
+      title: ExpirationDate
+      maxLength: 4
+      minLength: 4
+      type: string
+      description: 'Card expiry date : format MMYY'
+      example: '1233'
+    UpdatedCard:
+      title: Card
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Card'
+        - description: The updated card information
+        - type: object
+        - properties:
+            number:
+              $ref: '#/components/schemas/CardNumber'
+    CardUpdaterRequest:
+      title: CardUpdaterRequest
+      description: Request object to card updader.<br> Either the number or mxToken property is mandatory.
+      type: object
+      required:
+        - cardExpirationDate
+      properties:
+        cardNumber:
+          allOf:
+            - $ref: '#/components/schemas/CardNumber'
+            - description: Card number (PAN).<br> Either the number or mxToken property is mandatory.
+        cardMxToken:
+          allOf:
+            - $ref: '#/components/schemas/CardMxToken'
+            - description: Monext alias of the card number.<br> Either the number or mxToken property is mandatory.
+        cardExpirationDate:
+          $ref: '#/components/schemas/ExpirationDate'
+    CardUpdaterResponse:
+      title: CardUpdaterResponse
+      description: The response object returned by the Transfer service.
+      type: object
+      required:
+        - result
+        - card
+      properties:
+        result:
+          allOf:
+            - title: SuccessfulResult
+              description: Successful result
+              allOf:
+                - title: Result
+                  description: Result
+                  required:
+                    - title
+                    - code
+                    - detail
+                  type: object
+                  properties:
+                    title:
+                      maxLength: 50
+                      minLength: 0
+                      type: string
+                      description: 'ACCEPTED, ERROR, REFUSED, CANCELLED, INPROGRESS, ONHOLD_PARTNER, PENDING_RISK.<br> See [result code list](https://docs.monext.fr/display/DT/Return+codes)'
+                      example: ERROR
+                    code:
+                      maxLength: 5
+                      minLength: 0
+                      type: string
+                      description: 'Return code : more information. <br> See [result code list](https://docs.monext.fr/display/DT/Return+codes)'
+                      example: '02305'
+                    detail:
+                      maxLength: 255
+                      minLength: 0
+                      type: string
+                      description: A human-readable explanation specific to this occurrence of the problem.
+                      example: 'Invalid field format, please refer to the user guide'
+                - type: object
+                  properties:
+                    title:
+                      description: 'Result object in case of success or warning. ACCEPTED, REFUSED, CANCELLED, INPROGRESS, ONHOLD_PARTNER, PENDING_RISK.<br> See [result code list](https://docs.monext.fr/display/DT/Return+codes)'
+                      example: ACCEPTED
+                    code:
+                      description: 'Return code : more information. <br> See [result code list](https://docs.monext.fr/display/DT/Return+codes)'
+                      example: '00000'
+                    detail:
+                      example: Sucessful
+            - description: Result of the request when the response is valid.
+        card:
+          title: Card
+          allOf:
+            - $ref: '#/components/schemas/UpdatedCard'
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
