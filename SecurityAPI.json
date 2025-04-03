@@ -1,0 +1,645 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Security API",
+    "version": "1.0.0",
+    "license": {
+      "url": "https://www.monext.fr/retail",
+      "name": "Monext - All rights reserved"
+    },
+    "description": "# BASICS\n\n  ## Introduction\n\n  The Monext Retail API is RESTful, meaning that it uses HTTP verbs (POST, PUT, GET...) to perform functions on resources.\n\n  Specifically, POST is used to create a resource, PUT to update a resource, and GET to retrieve a resource or a collection of resources.\n\n  For example, to create a new wallet resource you would send a POST requests to Wallets.\n\n  POST and PUT requests usually require data to be passed in the message body to define the attributes of the object being created or updated.\n\n\n  ## Versioning\n  The API version is indicated in each endpoint resource path. For example, [https://api-sandbox.retail.monext.com/v1/checkout](https://api-sandbox.retail.monext.com/v1/checkout) indicates the API is at version 1.\n\n  Monext increments the version number when it releases a new version containing backwards-incompatible changes.\n\n  Some minor changes, mostly for improvements, could happens without version changes.\n\n\n  ## Security\n  The Monext Retail API processes sensitive data. That's why we pay special attention to security.\n  * Monext data centers deploy the latest in hardware and software security best practices.\n  * Communication with all Monext services requires TLS1.2.\n  * All communication is made by using standard features of HTTPs.\n  * Monext maintains PCI-DSS compliance certifications.\n\n  ## Responses\n  Monext Retail API calls return HTTP status codes. Some API calls also return JSON response bodies that include information about the resource.\n  When you create any Monext resource, the system associates an internal unique identifier for referencing that resource.\n\n  **HTTP Status Code**\n\n  Each API call returns a success or error HTTP status codes following the [RFC7231](https://tools.ietf.org/html/rfc7231).\n\n\n  **Success**\n\n  The following status codes of HTTP are used:\n\n  2xx - the request was successfully accepted and was or will be processed.\n\n\n  **Error**\n\n  The following status codes of HTTP are used:\n\n  4xx - the request was rejected due to a problem with the information sent by the client.\n\n  5xx - something unexpected occurred while fulfilling the request; the request may or may not have been processed, depending on the error.\n\n  Whenever a client receives a 5xx response, it should not assume anything about the processing state of such request.\n\n\n  ## Authentication\n\n  | Security Scheme Type      | HTTP  | Server |\n  |---------------------------|-------|--------|\n  | HTTP Authorization Scheme | basic |        |\n\n\n  ## Query\n  For most REST GET calls, you can specify one or more optional query parameters on the request URI to filter, limit the size of, and sort the data in an API response. For filter parameters, see the individual GET calls.\n\n\n  ## Sorting and Pagination\n  Rather than return everything from a large result set, we are using some URL parameters that will influence the page size and starting page number.\n\n  **Query parameter details**\n\n  | Parameter   | Type        | Description                                                             |\n  |-------------|-------------|-------------------------------------------------------------------------|\n  | size        | integer     | The number of items to list in the response.                            |\n  | page        | integer     | The page index.                                                         |\n  | sort        | string      | Sorts resources in the response by a specified value and sort direction.|\n\n  **Response field details**\n\n  | Parameter   | Type    | Description                                                       |\n  |-------------|---------|-------------------------------------------------------------------|\n  | count       | integer | The number of items to list in the response.                      |\n  | startIndex  | integer | The sort order index of the first resource in the returned array. |\n  | endIndex    | integer | The sort order index of the last resource in the returned array.  |\n  | recordTotal | integer | count of records                                                  |\n  <br>"
+  },
+  "x-readme": {
+    "explorer-enabled": true,
+    "samples-languages": [
+      "curl",
+      "node",
+      "javascript",
+      "python",
+      "kotlin",
+      "swift"
+    ],
+    "proxy-enabled": true,
+    "samples-enabled": true
+  },
+  "externalDocs": {
+    "url": "https://api-docs.retail.monext.com/",
+    "description": "Monext Online documentation"
+  },
+  "servers": [
+    {
+      "url": "https://api-sandbox.retail.monext.com",
+      "description": "Try our API on the sandbox (Homologation environment)"
+    }
+  ],
+  "security": [
+    {
+      "basicAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Test"
+    },
+    {
+      "name": "Encryption",
+      "description": "Encryption services\n",
+      "externalDocs": {
+        "description": "Documentation",
+        "url": "#"
+      }
+    }
+  ],
+  "paths": {
+    "/v1/checkout/alive": {
+      "get": {
+        "tags": [
+          "Test"
+        ],
+        "summary": "is it alive ?",
+        "operationId": "alive",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Precondition Failed",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Not Implemented",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway ou Proxy Error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Gateway Time-out",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/checkout/components": {
+      "post": {
+        "tags": [
+          "Test"
+        ],
+        "summary": "See all component (develop environment)",
+        "description": "Just to see all component (only in develop environment)\n",
+        "operationId": "components",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "AllComponents",
+                "type": "object",
+                "required": [
+                  "result"
+                ],
+                "properties": {
+                  "encryptionKey": {
+                    "$ref": "#/components/schemas/EncryptionKey"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/security/encryption/keys/{name}": {
+      "get": {
+        "tags": [
+          "Encryption"
+        ],
+        "summary": "Get Encryption Key",
+        "description": "Retrieve a public encryption key to encrypt sensitive data using the JWE (JSON Web Encryption) format. <br> JWE is a standard format for encrypting data in a compact and secure way, allowing you to protect sensitive information during transmission. <br> Learn more about JWE [here](https://fr.wikipedia.org/wiki/JSON_Web_Encryption).\n",
+        "operationId": "getEncryptionKey",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "description": "Your encryption key name. Unique for the merchant. <br> It is a non-accented alphanumeric string with a maximum length of 30 characters. <br> The characters '_' and '-' are allowed. All other characters are prohibited. <br> The name property is case-insensitive.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 30,
+              "minLength": 1,
+              "example": "AAAA_bbb-123"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EncryptionKeyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Not Implemented",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway ou Proxy Error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Gateway Time-out",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "links": {},
+    "callbacks": {},
+    "schemas": {
+      "Result": {
+        "title": "Result",
+        "description": "Result",
+        "required": [
+          "title",
+          "code",
+          "detail"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "ACCEPTED, ERROR, REFUSED, CANCELLED, INPROGRESS, ONHOLD_PARTNER, PENDING_RISK.<br> See [result code list](https://docs.monext.fr/display/DT/Return+codes)",
+            "example": "ERROR"
+          },
+          "code": {
+            "maxLength": 5,
+            "minLength": 0,
+            "type": "string",
+            "description": "Return code : more information. <br> See [result code list](https://docs.monext.fr/display/DT/Return+codes)",
+            "example": "02305"
+          },
+          "detail": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "A human-readable explanation specific to this occurrence of the problem.",
+            "example": "Invalid field format, please refer to the user guide"
+          }
+        }
+      },
+      "SuccessfulResult": {
+        "title": "SuccessfulResult",
+        "description": "Successful result",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Result"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "title": {
+                "description": "Result object in case of success or warning. ACCEPTED, REFUSED, CANCELLED, INPROGRESS, ONHOLD_PARTNER, PENDING_RISK.<br> See [result code list](https://docs.monext.fr/display/DT/Return+codes)",
+                "example": "ACCEPTED"
+              },
+              "code": {
+                "description": "Return code : more information. <br> See [result code list](https://docs.monext.fr/display/DT/Return+codes)",
+                "example": "00000"
+              },
+              "detail": {
+                "example": "Sucessful"
+              }
+            }
+          }
+        ]
+      },
+      "BadRequestResult": {
+        "title": "BadRequestResult",
+        "description": "BadRequest result",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Result"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "invalidParams": {
+                "description": "List of invalid fields and the appropriate format",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/InvalidParams"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "InvalidParams": {
+        "title": "InvalidParams",
+        "type": "object",
+        "description": "List of invalid fields and the appropriate format",
+        "properties": {
+          "name": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "invalid field name"
+          },
+          "reason": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "expected format for the field",
+            "example": "size must be between 3 and 4"
+          },
+          "codes": {
+            "maxItems": 255,
+            "minItems": 0,
+            "type": "array",
+            "description": "Translation error key",
+            "example": "{form.group.error}",
+            "items": {
+              "type": "string",
+              "description": "Translation error key",
+              "example": "{form.group.error}"
+            }
+          },
+          "arguments": {
+            "maxItems": 255,
+            "minItems": 0,
+            "type": "array",
+            "description": "Arguments error key",
+            "example": 127,
+            "items": {
+              "type": "string",
+              "description": "Arguments error key",
+              "example": "127"
+            }
+          }
+        }
+      },
+      "EncryptionKeyResponse": {
+        "title": "EncryptionKeyResponse",
+        "type": "object",
+        "required": [
+          "result",
+          "encryptionKey"
+        ],
+        "properties": {
+          "result": {
+            "allOf": [
+              {
+                "title": "SuccessfulResult",
+                "description": "Successful result",
+                "allOf": [
+                  {
+                    "title": "Result",
+                    "description": "Result",
+                    "required": [
+                      "title",
+                      "code",
+                      "detail"
+                    ],
+                    "type": "object",
+                    "properties": {
+                      "title": {
+                        "maxLength": 50,
+                        "minLength": 0,
+                        "type": "string",
+                        "description": "ACCEPTED, ERROR, REFUSED, CANCELLED, INPROGRESS, ONHOLD_PARTNER, PENDING_RISK.<br> See [result code list](https://docs.monext.fr/display/DT/Return+codes)",
+                        "example": "ERROR"
+                      },
+                      "code": {
+                        "maxLength": 5,
+                        "minLength": 0,
+                        "type": "string",
+                        "description": "Return code : more information. <br> See [result code list](https://docs.monext.fr/display/DT/Return+codes)",
+                        "example": "02305"
+                      },
+                      "detail": {
+                        "maxLength": 255,
+                        "minLength": 0,
+                        "type": "string",
+                        "description": "A human-readable explanation specific to this occurrence of the problem.",
+                        "example": "Invalid field format, please refer to the user guide"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "title": {
+                        "description": "Result object in case of success or warning. ACCEPTED, REFUSED, CANCELLED, INPROGRESS, ONHOLD_PARTNER, PENDING_RISK.<br> See [result code list](https://docs.monext.fr/display/DT/Return+codes)",
+                        "example": "ACCEPTED"
+                      },
+                      "code": {
+                        "description": "Return code : more information. <br> See [result code list](https://docs.monext.fr/display/DT/Return+codes)",
+                        "example": "00000"
+                      },
+                      "detail": {
+                        "example": "Sucessful"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "description": "Result of the request when the response is valid."
+              }
+            ]
+          },
+          "encryptionKey": {
+            "$ref": "#/components/schemas/EncryptionKey"
+          }
+        }
+      },
+      "EncryptionKey": {
+        "title": "EncryptionKey",
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "key"
+        ],
+        "properties": {
+          "id": {
+            "description": "The unique key identifier. <br> This Id is used when interacting with other services that require encrypted data.<br> This Id must be sent in the JWE header (kid).\n",
+            "type": "integer",
+            "format": "int32",
+            "example": "23456"
+          },
+          "name": {
+            "type": "string",
+            "description": "Your encryption key name. Unique for the merchant. <br> It is a non-accented alphanumeric string with a maximum length of 30 characters. <br> The characters '_' and '-' are allowed. All other characters are prohibited. <br> The name property is case-insensitive.",
+            "example": "AAAA_bbb-123",
+            "maxLength": 30,
+            "minLength": 1
+          },
+          "key": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "The JSON Web Key (JWK) details, containing the public key information used for encryption. <br> The JWK format is used to represent cryptographic keys and it allows for secure key management and transmission.<br> For more details, refer to JSON Web Encryption (JWE).<br> 'key' property is a dictionary of key-value pairs where the values can only be strings e.g. {\"kty\": \"RSA\", \"e\": \"AQAB\", kid\": \"4873\", \"exp\": \"1733048660\", \"n\": \"AIqPCKTmLFvKuVkCZfYWd../..\"}",
+            "example": {
+              "kty": "RSA",
+              "e": "AQAB",
+              "kid": 4873,
+              "exp": 1733048660,
+              "n": "AIqPCKTmLFvKuVkCZfYWdnHj7WC9Acp5mU../.."
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    }
+  }
+}
