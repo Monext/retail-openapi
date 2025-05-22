@@ -2,7 +2,7 @@
   "openapi": "3.0.2",
   "info": {
     "title": "Checkout API",
-    "version": "1.23.0",
+    "version": "1.24.0",
     "license": {
       "url": "https://www.monext.fr/retail",
       "name": "Monext - All rights reserved"
@@ -4765,7 +4765,7 @@
           "3DS Authentication"
         ],
         "summary": "Continue a 3DS authentication session",
-        "description": "This service continue an existing 3D Secure (3DS) authentication session with the cardholder's issuing bank (ACS). It is used to validate the cardholder's identity during the checkout process, enhancing transaction security and compliance with authentication requirements.\n",
+        "description": "This service continues an existing 3D Secure (3DS) authentication session with the cardholder's issuing bank (ACS). It is used to validate the cardholder's identity during the checkout process, enhancing transaction security and compliance with authentication requirements.\n",
         "operationId": "authenticationContinue",
         "parameters": [
           {
@@ -4941,7 +4941,7 @@
           "3DS Authentication"
         ],
         "summary": "Verify a 3DS authentication session",
-        "description": "This service verify a 3D Secure (3DS) authentication session with the cardholder's issuing bank (ACS). It is used to validate the cardholder's identity during the checkout process, enhancing transaction security and compliance with authentication requirements.",
+        "description": "This service verifies a 3D Secure (3DS) authentication session with the cardholder's issuing bank (ACS). It is used to validate the cardholder's identity during the checkout process, enhancing transaction security and compliance with authentication requirements.",
         "operationId": "authenticationVerify",
         "parameters": [
           {
@@ -7388,6 +7388,9 @@
                 "$ref": "#/components/schemas/Challenge"
               },
               {
+                "$ref": "#/components/schemas/SDKChallenge"
+              },
+              {
                 "$ref": "#/components/schemas/Failed"
               }
             ],
@@ -7964,6 +7967,100 @@
             }
           }
         ]
+      },
+      "SDKChallenge": {
+        "title": "SDKChallenge",
+        "type": "object",
+        "description": "Contains the necessary data for submitting a request during the 3D Secure authentication process, when SDK Challenge flow.",
+        "properties": {
+          "cardType": {
+            "type": "string",
+            "description": "Card type.",
+            "enum": [
+              "CARTE_BANCAIRE",
+              "VISA",
+              "MASTERCARD",
+              "AMERICAN_EXPRESS",
+              "DINERS",
+              "JCB"
+            ],
+            "example": "VISA",
+            "maxLength": 20
+          },
+          "threeDSServerTransID": {
+            "type": "string",
+            "description": "Required by the SDK to continue in challenge. <br> Canonical format as defined in IETF RFC 4122.",
+            "example": "6bf8f23c-e721-5bfc-8000-00000039a43d",
+            "maxLength": 36
+          },
+          "threeDSVersion": {
+            "type": "string",
+            "description": "This field contains the 3DS version that was used to process the transaction.",
+            "example": "2.2.0",
+            "maxLength": 8
+          },
+          "authenticationType": {
+            "type": "string",
+            "description": "Indicates the type of authentication that will be used to challenge the cardholder.<br> Possible Values:<br> - 01 - Static<br> - 02 - Dynamic<br> - 03 - OOB (Out of Band)<br> - 04 - Decoupled<br>",
+            "example": "02",
+            "maxLength": 2
+          },
+          "transStatus": {
+            "type": "string",
+            "description": "Returns an indicator about enrollment result. See values transStatus.",
+            "example": "Y",
+            "maxLength": 1
+          },
+          "sdkTransID": {
+            "type": "string",
+            "description": "Universally unique transaction identifier assigned by the 3DS SDK to identify a single transaction.<br> Canonical format as defined in IETF RFC 4122.",
+            "example": "b60c9879-ac77-4918-a317-7b01c4317053",
+            "maxLength": 36
+          },
+          "dsTransID": {
+            "type": "string",
+            "description": "Canonical format as defined in IETF RFC 4122.<br> May utilize any of the specified versions as long as the output meets specified requirements.",
+            "example": "d7a63c15-bdf8-4e6b-9c69-3e7c6b5c1f23",
+            "maxLength": 36
+          },
+          "acsTransID": {
+            "type": "string",
+            "description": "Required by the SDK to continue in challenge.<br> Canonical format as defined in IETF RFC 4122.",
+            "example": "38b4a4f4-ceee-457a-80d3-40d4fd3aa618",
+            "maxLength": 36
+          },
+          "acsRenderingType": {
+            "type": "object",
+            "description": "Specifies the ACS rendering type.",
+            "example": {
+              "acsInterface": "01",
+              "acsUiTemplate": "01"
+            }
+          },
+          "acsReferenceNumber": {
+            "type": "string",
+            "description": "Required by the SDK to continue in challenge.",
+            "example": "3DS_LOA_ACS_MOMD_020100_00061",
+            "maxLength": 32
+          },
+          "acsSignedContent": {
+            "type": "string",
+            "description": "Required by the SDK to continue in challenge.",
+            "example": "eyJ4NWMi##..6716..##95_fYwXQ"
+          },
+          "acsOperatorID": {
+            "type": "string",
+            "description": "Any individual DS may impose specific formatting and character requirements on the contents of this field.",
+            "maxLength": 32,
+            "example": "ACS_OP_123456"
+          },
+          "acsChallengeMandated": {
+            "type": "string",
+            "description": "Specifies if ACS Challenge is mandated.",
+            "example": "N",
+            "maxLength": 1
+          }
+        }
       },
       "Frictionless": {
         "title": "Frictionless",
