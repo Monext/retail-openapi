@@ -2,7 +2,7 @@
   "openapi": "3.0.2",
   "info": {
     "title": "Checkout API",
-    "version": "1.24.0",
+    "version": "1.26.0",
     "license": {
       "url": "https://www.monext.fr/retail",
       "name": "Monext - All rights reserved"
@@ -30,6 +30,17 @@
     {
       "url": "https://api-sandbox.retail.monext.com",
       "description": "Try our API on the sandbox (Homologation environment)"
+    },
+    {
+      "url": "https://develop-dev1-rest-api.ext.dev.payline.com"
+    },
+    {
+      "url": "https://develop-dev2-rest-api.ext.dev.payline.com",
+      "description": "docker DEV2"
+    },
+    {
+      "url": "https://admin.dev.payline.com/new-api",
+      "description": "Recette (DEV2)"
     }
   ],
   "security": [
@@ -7592,8 +7603,7 @@
         ],
         "properties": {
           "appID": {
-            "maxLength": 36,
-            "minLength": 0,
+            "format": "uuid",
             "type": "string",
             "description": "Universally unique ID created upon all installations and updates of the 3DS Requestor App on a Consumer Device. This will be newly generated and stored by the 3DS SDK for each installation or update.<br/>Length: 36 characters with JSON Data Type.<br/>Canonical format as defined in IETF RFC 4122. This may utilise any of the specified versions as long as the output meets specified."
           },
@@ -7631,14 +7641,13 @@
             "example": 10
           },
           "referenceNumber": {
-            "maxLength": 32,
-            "minLength": 0,
             "type": "string",
-            "description": "Identifies the vendor and version for the 3DS SDK that is integrated in a 3DS Requestor App, assigned by EMVCo when the 3DS SDK is approved."
+            "description": "Identifies the vendor and version for the 3DS SDK that is integrated in a 3DS Requestor App, assigned by EMVCo when the 3DS SDK is approved.",
+            "maxLength": 32,
+            "minLength": 0
           },
           "transID": {
-            "maxLength": 32,
-            "minLength": 0,
+            "format": "uuid",
             "type": "string",
             "description": "Universally unique transaction identifier assigned by the 3DS SDK to identify a single transaction."
           },
@@ -7989,9 +7998,9 @@
           },
           "threeDSServerTransID": {
             "type": "string",
+            "format": "uuid",
             "description": "Required by the SDK to continue in challenge. <br> Canonical format as defined in IETF RFC 4122.",
-            "example": "6bf8f23c-e721-5bfc-8000-00000039a43d",
-            "maxLength": 36
+            "example": "6bf8f23c-e721-5bfc-8000-00000039a43d"
           },
           "threeDSVersion": {
             "type": "string",
@@ -8013,21 +8022,21 @@
           },
           "sdkTransID": {
             "type": "string",
+            "format": "uuid",
             "description": "Universally unique transaction identifier assigned by the 3DS SDK to identify a single transaction.<br> Canonical format as defined in IETF RFC 4122.",
-            "example": "b60c9879-ac77-4918-a317-7b01c4317053",
-            "maxLength": 36
+            "example": "b60c9879-ac77-4918-a317-7b01c4317053"
           },
           "dsTransID": {
             "type": "string",
+            "format": "uuid",
             "description": "Canonical format as defined in IETF RFC 4122.<br> May utilize any of the specified versions as long as the output meets specified requirements.",
-            "example": "d7a63c15-bdf8-4e6b-9c69-3e7c6b5c1f23",
-            "maxLength": 36
+            "example": "d7a63c15-bdf8-4e6b-9c69-3e7c6b5c1f23"
           },
           "acsTransID": {
             "type": "string",
+            "format": "uuid",
             "description": "Required by the SDK to continue in challenge.<br> Canonical format as defined in IETF RFC 4122.",
-            "example": "38b4a4f4-ceee-457a-80d3-40d4fd3aa618",
-            "maxLength": 36
+            "example": "38b4a4f4-ceee-457a-80d3-40d4fd3aa618"
           },
           "acsRenderingType": {
             "type": "object",

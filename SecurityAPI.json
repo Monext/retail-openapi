@@ -30,6 +30,14 @@
     {
       "url": "https://api-sandbox.retail.monext.com",
       "description": "Try our API on the sandbox (Homologation environment)"
+    },
+    {
+      "url": "https://develop-dev2-rest-api.ext.dev.payline.com",
+      "description": "docker DEV2"
+    },
+    {
+      "url": "https://admin.dev.payline.com/new-api",
+      "description": "Recette (DEV2)"
     }
   ],
   "security": [
