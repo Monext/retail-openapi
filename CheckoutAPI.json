@@ -1594,6 +1594,149 @@
         }
       }
     },
+    "/v1/checkout/payments/prepare": {
+      "post": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "Prepare a payment",
+        "description": "Currently, this service is only used for APPLE PAY direct integration. This service allows you to prepare a payment session for APPLE PAY.<br> It enables merchants to retrieve the session data required to display the Apple Pay wallet.",
+        "operationId": "paymentPrepare",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentPrepareRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentPrepareResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict: duplicated payment transaction",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Not Implemented",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway ou Proxy Error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Gateway Time-out",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/checkout/merchants/{merchantId}/mxwallets": {
       "post": {
         "tags": [
@@ -6774,6 +6917,86 @@
           }
         }
       },
+      "PaymentPrepareRequest": {
+        "title": "PaymentPrepareRequest",
+        "description": "Request object to prepare a payment",
+        "type": "object",
+        "required": [
+          "paymentMethodId",
+          "orderReference",
+          "miscData"
+        ],
+        "properties": {
+          "paymentMethodId": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PaymentMethodId"
+              },
+              {
+                "description": "Specifies which of the payment methods (acquiring contracts or PSP contracts) shall be used for the payment."
+              },
+              {
+                "example": "APPLEPAY_01"
+              }
+            ]
+          },
+          "orderReference": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderReference"
+              }
+            ]
+          },
+          "miscData": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MiscData"
+              },
+              {
+                "description": "'miscData' can be transmit to the payment method partners.<br> Consult the payment method for each use.<br> 'miscData' is a dictionary values can be of any type (aka free-form object)<br> Note: The first key of the JSON must be equivalent to the paymentMethodId param. Example:<br>\n  ```\n    \"APPLEPAY_01\": {\n        \"displayName\": \"nameToDisplay\",\n        \"domainName\": \"webpayment.dev.payline.com\",\n        \"validationURL\": \"https://apple-pay-gateway-cert.apple.com/paymentservices/startSession\"\n    }\n  ```"
+              }
+            ]
+          }
+        }
+      },
+      "PaymentPrepareResponse": {
+        "description": "The response object returned by the paymentPrepare service.",
+        "type": "object",
+        "required": [
+          "result",
+          "data"
+        ],
+        "properties": {
+          "result": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SessionResponse/properties/result/allOf/0"
+              },
+              {
+                "description": "Result of the request when the response is valid."
+              }
+            ]
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Data returned by the partner. 'data' is a dictionary values can be of any type (aka free-form object) Example:<br>\n  ```\n  {\n      \"epochTimestamp\": 1665652979253,\n      \"expiresAt\": 1665656579253,\n      \"merchantSessionIdentifier\": \"SSH690EA65CBF8E40D09BA7CD.............\",\n      \"nonce\": \"7dc9e0d2\",\n      \"merchantIdentifier\": \"378E33CF6B48CA390B0D72820AE3CE6F7AF0597ED66F4844C1307CAFCCF7F7B9\",\n      \"domainName\": \"webpayment.dev.payline.com\",\n      \"displayName\": \"Rahim_REST\",\n      \"signature\": \"308006092a864886f70d010.................\",\n      \"operationalAnalyticsIdentifier\": \"Rahim_REST:378E33CF6B48CA39...........\",\n      \"retries\": 0,\n      \"pspId\": \"378E33CF6B48CA390..........\"\n  }\n```",
+            "example": {
+              "epochTimestamp": 1665652979253,
+              "expiresAt": 1665656579253,
+              "merchantSessionIdentifier": "SSH690EA65CBF8E40D09BA7CD.............",
+              "nonce": "7dc9e0d2",
+              "merchantIdentifier": "378E33CF6B48CA390B0D72820AE3CE6F7AF0597ED66F4844C1307CAFCCF7F7B9",
+              "domainName": "webpayment.dev.payline.com",
+              "displayName": "Rahim_REST",
+              "signature": "308006092a864886f70d010.................",
+              "operationalAnalyticsIdentifier": "Rahim_REST:378E33CF6B48CA39...........",
+              "retries": 0,
+              "pspId": "378E33CF6B48CA390.........."
+            }
+          }
+        }
+      },
       "MXWalletRequest": {
         "title": "MXWalletRequest",
         "description": "The request object used to update a MXWallet without impact its payment instruments.",
@@ -7605,7 +7828,7 @@
           "appID": {
             "format": "uuid",
             "type": "string",
-            "description": "Universally unique ID created upon all installations and updates of the 3DS Requestor App on a Consumer Device. This will be newly generated and stored by the 3DS SDK for each installation or update.<br/>Length: 36 characters with JSON Data Type.<br/>Canonical format as defined in IETF RFC 4122. This may utilise any of the specified versions as long as the output meets specified."
+            "description": "Universally unique ID created upon all installations and updates of the 3DS Requestor App on a Consumer Device. This will be newlygenerated and stored by the 3DS SDK for each installation or update.<br/> Canonical format as defined in IETF RFC 4122. This may utilise any of the specified versions as long as the output meets specified."
           },
           "deviceRenderingOptionsIF": {
             "type": "string",
@@ -7631,7 +7854,7 @@
             "maxLength": 256,
             "minLength": 0,
             "type": "string",
-            "description": "Public key component of the ephemeral key pair generated by the 3DS SDK and used to establish session keys between the 3DS SDK and ACS.<br/>In AReq, this data element is present as its own object.<br/>In ARes, this data element is contained within the ACS Signed Content JWS Object."
+            "description": "Public key component of the ephemeral key pair generated by the 3DS SDK and used to establish session keys between the 3DS SDK and ACS.<br/> In AReq, this data element is present as its own object.<br/> In ARes, this data element is contained within the ACS Signed Content JWS Object."
           },
           "maxTimeout": {
             "minimum": 5,
@@ -8208,6 +8431,48 @@
           }
         ]
       },
+      "XPay": {
+        "title": "XPay",
+        "type": "object",
+        "required": [
+          "network",
+          "tokenData"
+        ],
+        "description": "Object used as input to provide data for the XPay payment method (ApplePay, GooglePay, SamsungPay, ...).",
+        "properties": {
+          "transactionId": {
+            "type": "string",
+            "description": "The transaction identifier used by the XPay provider.<br> Currently used for ApplePay.",
+            "example": "cdf32e82b7db96e178d459e9c320f43a994950d7ee8700e1bf0fcff320cedeed"
+          },
+          "network": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Networks",
+                "description": "The card network used for the transaction (e.g., VISA, MASTERCARD)",
+                "example": "VISA"
+              }
+            ]
+          },
+          "tokenData": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "A JSON object containing payment information provided by the XPay provider. This typically includes cryptographic data, signatures, and other fields required to process the payment. Example: ``` {\n  \"signature\": \"...\",\n  \"intermediateSigningKey\": {...},\n  \"protocolVersion\": \"...\",\n  \"signedMessage\": \"...\"\n} ```",
+            "example": {
+              "data": "5JozDvWxrhTpQWUnRi7K8ggfe.../...",
+              "signature": "MIAGCSqGSIb3DQEHA.../.../AAAAAAAA",
+              "header": {
+                "ephemeralPublicKey": "MFkwEwA==",
+                "publicKeyHash": "SGHBwDEQnc.../...Vo=",
+                "transactionId": "cdf32e82b7db96e178d459e9c320f43a994950d7ee8700e1bf0fcff320cedeed"
+              },
+              "version": "EC_v1"
+            }
+          }
+        }
+      },
       "UsedCard": {
         "title": "UsedCard",
         "type": "object",
@@ -8758,6 +9023,9 @@
           },
           {
             "$ref": "#/components/schemas/MXWallet"
+          },
+          {
+            "$ref": "#/components/schemas/XPay"
           }
         ],
         "discriminator": {
@@ -9654,10 +9922,18 @@
       },
       "SelectedNetwork": {
         "title": "SelectedNetwork",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Networks",
+            "description": "Cardholder selected network for payment, specifically for cobranded cards.",
+            "example": "VISA"
+          }
+        ]
+      },
+      "Networks": {
+        "title": "Networks",
         "type": "string",
-        "maxLength": 30,
-        "minLength": 2,
-        "description": "Cardholder selected network for payment, specifically for cobranded cards.",
+        "description": "Networks list",
         "enum": [
           "AMERICAN_EXPRESS",
           "CETELEM",

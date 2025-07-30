@@ -877,21 +877,24 @@
               },
               "selectedNetwork": {
                 "title": "SelectedNetwork",
-                "type": "string",
-                "maxLength": 30,
-                "minLength": 2,
-                "description": "Cardholder selected network for payment, specifically for cobranded cards.",
-                "enum": [
-                  "AMERICAN_EXPRESS",
-                  "CETELEM",
-                  "CARTES_BANCAIRES",
-                  "COFINOGA",
-                  "DINERS_CLUB",
-                  "JCB",
-                  "MASTERCARD",
-                  "VISA"
-                ],
-                "example": "VISA"
+                "allOf": [
+                  {
+                    "description": "Cardholder selected network for payment, specifically for cobranded cards.",
+                    "example": "VISA",
+                    "title": "Networks",
+                    "type": "string",
+                    "enum": [
+                      "AMERICAN_EXPRESS",
+                      "CETELEM",
+                      "CARTES_BANCAIRES",
+                      "COFINOGA",
+                      "DINERS_CLUB",
+                      "JCB",
+                      "MASTERCARD",
+                      "VISA"
+                    ]
+                  }
+                ]
               },
               "network": {
                 "type": "string",
